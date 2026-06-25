@@ -1,0 +1,20 @@
+[
+  {
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "status": "disponivel",
+    "usuario": ""
+  },
+  {
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "status": "emprestado",
+    "usuario": "João"
+  },
+  {
+    "titulo": "Percy Jackson e o Ladrão de Raios",
+    "autor": "Rick Riordan",
+    "status": "disponível",
+    "usuario": ""
+  }
+]
