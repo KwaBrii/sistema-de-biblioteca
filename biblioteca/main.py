@@ -16,11 +16,27 @@ def salvar_livros(livros):
             ensure_ascii=False
         )
 
+def cadastrar_livro(livros):
+    pass
+
+def listar_livros(livros):
+    pass
+
+def emprestar_livro(livros):
+    pass
+
+def devolver_livro(livros):
+    pass
+
+def buscar_livro(livros):
+    pass
+
+# Ainda não sei se te um jeito melhor de fazer isso, talvez uma lista?
 def mostrar_menu():
     print("\n===SISTEMA DE BIBLIOTECA===")
     print("1 - Cadastrar livro")
     print("2 - Listar livros")
-    print("3 - Emoprestar livro")
+    print("3 - Emprestar livro")
     print("4 - Devolver livro")
     print("5 - Buscar livro")
     print("6 - Sair")
@@ -35,6 +51,20 @@ def main():
         if opcao == "6":
             print("Encerrando sistema...")
             break
+        elif opcao == "1":
+            cadastrar_livro(livros)
+        
+        elif opcao == "2":
+            listar_livros(livros)
+
+        elif opcao == "3":
+            emprestar_livro(livros)
+
+        elif opcao == "4":
+            devolver_livro(livros)
+        
+        else:
+            buscar_livro(livros)
 
 if __name__ == "__main__":
     main()
