@@ -15,3 +15,26 @@ def salvar_livros(livros):
             indent=4,
             ensure_ascii=False
         )
+
+def mostrar_menu():
+    print("\n===SISTEMA DE BIBLIOTECA===")
+    print("1 - Cadastrar livro")
+    print("2 - Listar livros")
+    print("3 - Emoprestar livro")
+    print("4 - Devolver livro")
+    print("5 - Buscar livro")
+    print("6 - Sair")
+
+def main():
+
+    livros = carregar_livros()
+    while True:
+        mostrar_menu()
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "6":
+            print("Encerrando sistema...")
+            break
+
+if __name__ == "__main__":
+    main()

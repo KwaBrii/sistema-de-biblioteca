@@ -16,5 +16,17 @@
     "autor": "Rick Riordan",
     "status": "disponível",
     "usuario": ""
+  },
+  {
+    "titulo": "A Metamorfose",
+    "autor": "Franz Kafka",
+    "status": "disponível",
+    "usuario": ""
+  },
+  {
+    "titulo": "Drácula",
+    "autor": "Bram Stoker",
+    "status": "emprestado",
+    "usuario": "Giovanna"
   }
 ]
