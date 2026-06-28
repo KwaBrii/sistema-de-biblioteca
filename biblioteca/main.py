@@ -1,17 +1,20 @@
+from pathlib import Path
 import json
+
+ARQUIVO_LIVROS = Path(__file__).parent / "livros.json"
 
 # Não esquecer: "r" = read (ler), "w" = write (escrever), "a" = add (adicionar)
 # json.load(f) converte o texto em lista/dicionário
 def carregar_livros():
-    with open("livros.json", "r", encoding="utf-8") as f:
-        livros = json.load(f)
+    with open(ARQUIVO_LIVROS, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 # indent=4 é um padrão de formatação que faz um recuo de 4 espaços, para hierarquia de informações
 def salvar_livros(livros):
-    with open("livros.json", "w", encoding="utf-8") as arquivo:
+    with open(ARQUIVO_LIVROS, "w", encoding="utf-8") as f:
         json.dump(
             livros,
-            arquivo,
+            f,
             indent=4,
             ensure_ascii=False
         )
@@ -27,6 +30,11 @@ def cadastrar_livro(livros):
         "status": "disponivel",
         "usuario": ""
     }
+    while True:
+        titulo = input("Título do livro: ").strip()
+        if titulo:
+            break
+        print("O título não pode ficar vazio.")
 
     livros.append(novo_livro)
     salvar_livros(livros)
