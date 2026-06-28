@@ -85,11 +85,11 @@ def main():
                 continuar = input(
                     "\nDeseja cadastrar outro livro? (S/N): "
                 ).strip().upper()
-                if continuar in ("S", "N"):
+                
+                if continuar == "N":
                     break
-                print("Digite apenas S ou N.")
-            if continuar == "N":
-                break
+                elif continuar != "S":
+                    print("Digite apenas S ou N.")
         
         elif opcao == "2":
             listar_livros(livros)
