@@ -30,7 +30,12 @@ def salvar_livros(livros):
 
 # .strip remove os espaços extras
 def cadastrar_livro(livros):
-    titulo = input("Título do livro: ").strip()
+    while True:
+        titulo = input("Título do livro: ").strip()
+        if titulo:
+            break
+        print("O título não pode ficar vazio.")
+
     autor = input("Autor do livro: ").strip()
 
     novo_livro = {
@@ -39,11 +44,6 @@ def cadastrar_livro(livros):
         "status": "disponivel",
         "usuario": ""
     }
-    while True:
-        titulo = input("Título do livro: ").strip()
-        if titulo:
-            break
-        print("O título não pode ficar vazio.")
 
 # .append vai adicionar o livro ao final da lista no JSON
     livros.append(novo_livro)
@@ -80,7 +80,16 @@ def main():
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            cadastrar_livro(livros)
+            while True:
+                cadastrar_livro(livros)
+                continuar = input(
+                    "\nDeseja cadastrar outro livro? (S/N): "
+                ).strip().upper()
+                if continuar in ("S", "N"):
+                    break
+                print("Digite apenas S ou N.")
+            if continuar == "N":
+                break
         
         elif opcao == "2":
             listar_livros(livros)

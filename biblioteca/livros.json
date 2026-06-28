@@ -28,5 +28,11 @@
     "autor": "Bram Stoker",
     "status": "emprestado",
     "usuario": "Giovanna"
+  },
+  {
+    "titulo": "Duna",
+    "autor": "Frank Herbert",
+    "status": "disponivel",
+    "usuario": ""
   }
 ]
