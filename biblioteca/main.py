@@ -45,6 +45,7 @@ def cadastrar_livro(livros):
             break
         print("O título não pode ficar vazio.")
 
+# .append vai adicionar o livro ao final da lista no JSON
     livros.append(novo_livro)
     salvar_livros(livros)
     print("\nLivro cadastrado com sucesso!")
@@ -78,10 +79,7 @@ def main():
         mostrar_menu()
         opcao = input("Escolha uma opção: ")
 
-        if opcao == "6":
-            print("Encerrando sistema...")
-            break
-        elif opcao == "1":
+        if opcao == "1":
             cadastrar_livro(livros)
         
         elif opcao == "2":
@@ -93,8 +91,12 @@ def main():
         elif opcao == "4":
             devolver_livro(livros)
         
-        else:
+        elif opcao == "5":
             buscar_livro(livros)
+
+        else:
+            print("Encerrando sistema...")
+            break
 
 if __name__ == "__main__":
     main()
