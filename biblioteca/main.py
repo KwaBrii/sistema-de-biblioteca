@@ -85,7 +85,7 @@ def main():
                 continuar = input(
                     "\nDeseja cadastrar outro livro? (S/N): "
                 ).strip().upper()
-                
+
                 if continuar == "N":
                     break
                 elif continuar != "S":
@@ -103,9 +103,12 @@ def main():
         elif opcao == "5":
             buscar_livro(livros)
 
-        else:
+        elif opcao == "6":
             print("Encerrando sistema...")
             break
+        
+        else:
+            print("Opção inválida.")
 
 if __name__ == "__main__":
     main()
