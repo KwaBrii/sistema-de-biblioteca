@@ -16,8 +16,21 @@ def salvar_livros(livros):
             ensure_ascii=False
         )
 
+# .strip remove os espaços extras
 def cadastrar_livro(livros):
-    pass
+    titulo = input("Título do livro: ").strip()
+    autor = input("Autor do livro: ").strip()
+
+    novo_livro = {
+        "titulo": titulo,
+        "autor": autor,
+        "status": "disponivel",
+        "usuario": ""
+    }
+
+    livros.append(novo_livro)
+    salvar_livros(livros)
+    print("\nLivro cadastrado com sucesso!")
 
 def listar_livros(livros):
     pass
