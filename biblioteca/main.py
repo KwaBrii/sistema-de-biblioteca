@@ -32,15 +32,21 @@ def salvar_livros(livros):
 def cadastrar_livro(livros):
     while True:
         titulo = input("Título do livro: ").strip()
-        titulo_normalizado = titulo.strip().lower()
         if titulo:
             break
         print("O título não pode ficar vazio.")
 
     autor = input("Autor do livro: ").strip()
+    autor_normalizado = autor.strip().lower()
+    titulo_normalizado = titulo.strip().lower()
 
+# Checa se o livro + autor é repetido, pois livros podem ter o mesmo nome
     for livro in livros:
-        if livro["titulo"].strip().lower() == titulo_normalizado:
+        if  (
+            livro["titulo"].strip().lower() == titulo_normalizado
+            and
+            livro["autor"].strip().lower() == autor_normalizado
+        ):
             print("\nEsse livro já está cadastrado.")
             return
 
@@ -56,8 +62,32 @@ def cadastrar_livro(livros):
     salvar_livros(livros)
     print("\nLivro cadastrado com sucesso!")
 
+# Limita o texto para não quebrar a tabela de exibição
+def limitar_texto(texto, tamanho):
+    if len(texto) > tamanho:
+        return texto[:tamanho - 4] + "..."
+    return texto
+
 def listar_livros(livros):
-    pass
+    if not livros:
+        print("\nNenhum livro cadastrado.")
+        return
+
+# <25 reserva 25 caracteres para o texto a linha à esquerda
+    print("\n=== LIVROS CADASTRADOS ===")
+    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
+    print("-" * 75)
+
+    for indice, livro in enumerate(livros, start=1):
+        titulo = limitar_texto(livro["titulo"], 30)
+        autor = limitar_texto(livro["autor"], 20)
+        
+        print(
+            f"{indice:<4}"
+            f"{titulo:<30}"
+            f"{autor:<20}"
+            f"{livro['status']}"
+        )
 
 def emprestar_livro(livros):
     pass
