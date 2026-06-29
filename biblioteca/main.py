@@ -32,11 +32,17 @@ def salvar_livros(livros):
 def cadastrar_livro(livros):
     while True:
         titulo = input("Título do livro: ").strip()
+        titulo_normalizado = titulo.strip().lower()
         if titulo:
             break
         print("O título não pode ficar vazio.")
 
     autor = input("Autor do livro: ").strip()
+
+    for livro in livros:
+        if livro["titulo"].strip().lower() == titulo_normalizado:
+            print("\nEsse livro já está cadastrado.")
+            return
 
     novo_livro = {
         "titulo": titulo,
