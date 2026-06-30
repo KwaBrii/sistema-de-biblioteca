@@ -90,10 +90,11 @@ def listar_livros(livros):
             f"{livro['status']}"
         )
 
-# Função de emprestar o livro, impede empréstimo duplicado checando se o livro já foi emprestado, atualiza os dados no JSON, checa se o livro existe no JSON
+# Função de emprestar o livro, impede empréstimo duplicado checando se o livro já foi emprestado, atualiza os dados no JSON, checa se o livro existe no JSON, lista os livros no inicio da função para quem for alugar se guiar
 def emprestar_livro(livros):
+    listar_livros(livros)
     titulo = input(
-        "Digite o título do livro: "
+        "\nDigite o título do livro: "
     ).strip()
 
     titulo_normalizado = titulo.lower()
