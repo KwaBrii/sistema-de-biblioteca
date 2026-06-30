@@ -40,5 +40,17 @@
     "autor": "Robert W. Chambers",
     "status": "disponivel",
     "usuario": ""
+  },
+  {
+    "titulo": "Memórias póstumas de Brás Cubas",
+    "autor": "Machado de Assis",
+    "status": "disponivel",
+    "usuario": ""
+  },
+  {
+    "titulo": "Moby Dick",
+    "autor": "Herman Melville",
+    "status": "emprestado",
+    "usuario": "Larissa"
   }
 ]

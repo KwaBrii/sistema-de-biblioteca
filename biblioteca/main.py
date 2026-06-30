@@ -1,3 +1,5 @@
+# Melhoria para o futuro: Adicionar ID de livros, adicionar quantidades do mesmo livro disponíveis
+
 from pathlib import Path
 import json
 
@@ -72,7 +74,6 @@ def listar_livros(livros):
     if not livros:
         print("\nNenhum livro cadastrado.")
         return
-
 # <25 reserva 25 caracteres para o texto a linha à esquerda
     print("\n=== LIVROS CADASTRADOS ===")
     print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
@@ -89,8 +90,33 @@ def listar_livros(livros):
             f"{livro['status']}"
         )
 
+# Função de emprestar o livro, impede empréstimo duplicado checando se o livro já foi emprestado, atualiza os dados no JSON, checa se o livro existe no JSON
 def emprestar_livro(livros):
-    pass
+    titulo = input(
+        "Digite o título do livro: "
+    ).strip()
+
+    titulo_normalizado = titulo.lower()
+    for livro in livros:
+        if livro["titulo"].strip().lower() == titulo_normalizado:
+            if livro["status"] == "emprestado":
+                print(
+                    f"\nO livro já está emprestado para "
+                    f"{livro['usuario']}."
+                )
+                return
+
+            usuario = input(
+                "Nome de quem está retirando: "
+            ).strip()
+
+            livro["status"] = "emprestado"
+            livro["usuario"] = usuario
+
+            salvar_livros(livros)
+            print("\nLivro emprestado com sucesso!")
+            return
+    print("\nLivro não encontrado.")
 
 def devolver_livro(livros):
     pass
