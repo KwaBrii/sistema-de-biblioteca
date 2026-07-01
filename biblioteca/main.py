@@ -119,11 +119,11 @@ def emprestar_livro(livros):
             return
     print("\nLivro não encontrado.")
 
+# Segue uma regra bem parecida com a de emprestar, mas troca o status para disponivel e tira o registro de usuário
 def devolver_livro(livros):
     titulo = input(
         "\nDigite qual livro deseja devolver: "
     ).strip()
-
     titulo_normalizado = titulo.lower()
     for livro in livros:
         if livro["titulo"].strip().lower() == titulo_normalizado:
@@ -137,9 +137,32 @@ def devolver_livro(livros):
             return
     print("\nLivro não encontrado.")
 
-
+# Função com termo de busca para livro ou autor. No momento busca qualquer letra ou palavra e retorna se está no nome de algum livro ou autor e em quais
 def buscar_livro(livros):
-    pass
+    termo_busca = input(
+        "\nQual livro ou autor deseja buscar? "
+    ).strip().lower()
+    print("\n=== LIVROS ENCONTRADOS ===")
+    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
+    print("-" * 75)
+
+    for indice, livro in enumerate(livros, start=1):
+        if (
+            termo_busca in livro["titulo"].lower()
+            or
+            termo_busca in livro["autor"].lower()
+        ):
+            titulo = limitar_texto(livro["titulo"], 30)
+            autor = limitar_texto(livro["autor"], 20)
+            print(
+                f"{indice:<4}"
+                f"{titulo:<30}"
+                f"{autor:<20}"
+                f"{livro['status']}"
+            )
+            encontrados = True
+    if not encontrados:
+        print("\nNenhum livro encontrado.")
 
 # Ainda não sei se te um jeito melhor de fazer isso, talvez uma lista?
 def mostrar_menu():
@@ -151,8 +174,16 @@ def mostrar_menu():
     print("5 - Buscar livro")
     print("6 - Sair")
 
-def main():
+# Uma função para loop na lista caso a pessoa decida realizar o mesmo tipo de ação várias vezes
+def confirmar(mensagem):
+    while True:
+        resposta = input(mensagem).strip().upper()
+        if resposta in ("S", "N"):
+            return resposta
+        print("Digite apenas S ou N.")
 
+# Main, one todas as funções agem em conjunto
+def main():
     livros = carregar_livros()
     while True:
         mostrar_menu()
@@ -161,14 +192,10 @@ def main():
         if opcao == "1":
             while True:
                 cadastrar_livro(livros)
-                continuar = input(
+                if confirmar(
                     "\nDeseja cadastrar outro livro? (S/N): "
-                ).strip().upper()
-
-                if continuar == "N":
+                ) == "N":
                     break
-                elif continuar != "S":
-                    print("Digite apenas S ou N.")
         
         elif opcao == "2":
             listar_livros(livros)
@@ -176,29 +203,26 @@ def main():
         elif opcao == "3":
             while True:
                 emprestar_livro(livros)
-                continuar = input(
+                if confirmar(
                     "\nDeseja emprestar outro livro? (S/N): "
-                ).strip().upper()
-
-                if continuar == "N":
+                ) == "N":
                     break
-                elif continuar != "S":
-                    print("Digite apenas S ou N.")
 
         elif opcao == "4":
             while True:
                 devolver_livro(livros)
-                continuar = input(
+                if confirmar(
                     "\nDeseja devolver outro livro? (S/N): "
-                ).strip().upper()
-
-                if continuar == "N":
+                ) == "N":
                     break
-                elif continuar != "S":
-                    print("Digite apenas S ou N.")
 
         elif opcao == "5":
-            buscar_livro(livros)
+            while True:
+                buscar_livro(livros)
+                if confirmar(
+                    "\nDeseja buscar outro livro ou autor? (S/N): "
+                ) == "N":
+                    break
 
         elif opcao == "6":
             print("Encerrando sistema...")

@@ -58,5 +58,23 @@
     "autor": "George R. R. Martin",
     "status": "disponivel",
     "usuario": ""
+  },
+  {
+    "titulo": "A Divina Comédia",
+    "autor": "Dante Alighieri",
+    "status": "disponivel",
+    "usuario": ""
+  },
+  {
+    "titulo": "Os Lusíadas",
+    "autor": "Luís Vaz de Camões",
+    "status": "disponivel",
+    "usuario": ""
+  },
+  {
+    "titulo": "A Pianista",
+    "autor": "Machado de Assis",
+    "status": "disponivel",
+    "usuario": ""
   }
 ]
