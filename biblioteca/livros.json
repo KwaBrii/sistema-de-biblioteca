@@ -20,7 +20,7 @@
   {
     "titulo": "A Metamorfose",
     "autor": "Franz Kafka",
-    "status": "disponível",
+    "status": "disponivel",
     "usuario": ""
   },
   {
@@ -52,5 +52,11 @@
     "autor": "Herman Melville",
     "status": "emprestado",
     "usuario": "Larissa"
+  },
+  {
+    "titulo": "A Guerra dos Tronos (Vol. 1)",
+    "autor": "George R. R. Martin",
+    "status": "disponivel",
+    "usuario": ""
   }
 ]

@@ -120,7 +120,23 @@ def emprestar_livro(livros):
     print("\nLivro não encontrado.")
 
 def devolver_livro(livros):
-    pass
+    titulo = input(
+        "\nDigite qual livro deseja devolver: "
+    ).strip()
+
+    titulo_normalizado = titulo.lower()
+    for livro in livros:
+        if livro["titulo"].strip().lower() == titulo_normalizado:
+            if livro["status"] == "emprestado":
+                livro["status"] = "disponivel"
+                livro["usuario"] = ""
+                salvar_livros(livros)
+                print("\nLivro devolvido com sucesso.")
+                return
+            print("\nLivro já está disponivel!")
+            return
+    print("\nLivro não encontrado.")
+
 
 def buscar_livro(livros):
     pass
@@ -158,11 +174,29 @@ def main():
             listar_livros(livros)
 
         elif opcao == "3":
-            emprestar_livro(livros)
+            while True:
+                emprestar_livro(livros)
+                continuar = input(
+                    "\nDeseja emprestar outro livro? (S/N): "
+                ).strip().upper()
+
+                if continuar == "N":
+                    break
+                elif continuar != "S":
+                    print("Digite apenas S ou N.")
 
         elif opcao == "4":
-            devolver_livro(livros)
-        
+            while True:
+                devolver_livro(livros)
+                continuar = input(
+                    "\nDeseja devolver outro livro? (S/N): "
+                ).strip().upper()
+
+                if continuar == "N":
+                    break
+                elif continuar != "S":
+                    print("Digite apenas S ou N.")
+
         elif opcao == "5":
             buscar_livro(livros)
 
