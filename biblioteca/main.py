@@ -19,35 +19,55 @@ def carregar_livros():
             json.dump([], f)
         return []
     
-
 # indent=4 é um padrão de formatação que faz um recuo de 4 espaços, para hierarquia de informações
 def salvar_livros(livros):
     with open(ARQUIVO_LIVROS, "w", encoding="utf-8") as f:
-        json.dump(
-            livros,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+        json.dump(livros, f, indent=4, ensure_ascii=False)
 
-# .strip remove os espaços extras
+# Centraliza a normalização de texto (usada em cadastro, busca, empréstimo e devolução)
+def normalizar(texto):
+    return texto.strip().lower()
+
+# Limita o texto para não quebrar a tabela de exibição
+def limitar_texto(texto, tamanho):
+    if len(texto) > tamanho:
+        return texto[:tamanho - 4] + "..."
+    return texto
+
+# Centraliza a busca de um livro pelo título
+def encontrar_livro(livros, titulo):
+    titulo_normalizado = normalizar(titulo)
+    for livro in livros:
+        if normalizar(livro["titulo"]) == titulo_normalizado:
+            return livro
+    return None
+
+# Cabeçalho da tabela, usado tanto em listar quanto em buscar
+def imprimir_cabecalho(titulo_tabela):
+    print(f"\n{titulo_tabela}")
+    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
+    print("-" * 75)
+
+# Imprime uma linha da tabela (um livro), usado em listar e buscar
+def imprimir_linha(indice, livro):
+    titulo = limitar_texto(livro["titulo"], 30)
+    autor = limitar_texto(livro["autor"], 20)
+    print(f"{indice:<4}{titulo:<30}{autor:<20}{livro['status']}")
+
+# Função do cadastro de livros
 def cadastrar_livro(livros):
     while True:
         titulo = input("Título do livro: ").strip()
         if titulo:
             break
         print("O título não pode ficar vazio.")
-
     autor = input("Autor do livro: ").strip()
-    autor_normalizado = autor.strip().lower()
-    titulo_normalizado = titulo.strip().lower()
 
 # Checa se o livro + autor é repetido, pois livros podem ter o mesmo nome
     for livro in livros:
-        if  (
-            livro["titulo"].strip().lower() == titulo_normalizado
-            and
-            livro["autor"].strip().lower() == autor_normalizado
+        if (
+            normalizar(livro["titulo"]) == normalizar(titulo)
+            and normalizar(livro["autor"]) == normalizar(autor)
         ):
             print("\nEsse livro já está cadastrado.")
             return
@@ -64,107 +84,67 @@ def cadastrar_livro(livros):
     salvar_livros(livros)
     print("\nLivro cadastrado com sucesso!")
 
-# Limita o texto para não quebrar a tabela de exibição
-def limitar_texto(texto, tamanho):
-    if len(texto) > tamanho:
-        return texto[:tamanho - 4] + "..."
-    return texto
-
+# Função para listagem de livros, o cabeçalho já foi ajustado a partir da linha 45
 def listar_livros(livros):
     if not livros:
         print("\nNenhum livro cadastrado.")
         return
-# <25 reserva 25 caracteres para o texto a linha à esquerda
-    print("\n=== LIVROS CADASTRADOS ===")
-    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
-    print("-" * 75)
-
+    imprimir_cabecalho("=== LIVROS CADASTRADOS ===")
     for indice, livro in enumerate(livros, start=1):
-        titulo = limitar_texto(livro["titulo"], 30)
-        autor = limitar_texto(livro["autor"], 20)
-        
-        print(
-            f"{indice:<4}"
-            f"{titulo:<30}"
-            f"{autor:<20}"
-            f"{livro['status']}"
-        )
+        imprimir_linha(indice, livro)
 
 # Função de emprestar o livro, impede empréstimo duplicado checando se o livro já foi emprestado, atualiza os dados no JSON, checa se o livro existe no JSON, lista os livros no inicio da função para quem for alugar se guiar
 def emprestar_livro(livros):
     listar_livros(livros)
-    titulo = input(
-        "\nDigite o título do livro: "
-    ).strip()
+    titulo = input("\nDigite o título do livro: ").strip()
 
-    titulo_normalizado = titulo.lower()
-    for livro in livros:
-        if livro["titulo"].strip().lower() == titulo_normalizado:
-            if livro["status"] == "emprestado":
-                print(
-                    f"\nO livro já está emprestado para "
-                    f"{livro['usuario']}."
-                )
-                return
+    livro = encontrar_livro(livros, titulo)
+    if not livro:
+        print("\nLivro não encontrado.")
+        return
 
-            usuario = input(
-                "Nome de quem está retirando: "
-            ).strip()
+    if livro["status"] == "emprestado":
+        print(f"\nO livro já está emprestado para {livro['usuario']}.")
+        return
 
-            livro["status"] = "emprestado"
-            livro["usuario"] = usuario
+    usuario = input("Nome de quem está retirando: ").strip()
+    livro["status"] = "emprestado"
+    livro["usuario"] = usuario
 
-            salvar_livros(livros)
-            print("\nLivro emprestado com sucesso!")
-            return
-    print("\nLivro não encontrado.")
+    salvar_livros(livros)
+    print("\nLivro emprestado com sucesso!")
 
 # Segue uma regra bem parecida com a de emprestar, mas troca o status para disponivel e tira o registro de usuário
 def devolver_livro(livros):
-    titulo = input(
-        "\nDigite qual livro deseja devolver: "
-    ).strip()
-    titulo_normalizado = titulo.lower()
-    for livro in livros:
-        if livro["titulo"].strip().lower() == titulo_normalizado:
-            if livro["status"] == "emprestado":
-                livro["status"] = "disponivel"
-                livro["usuario"] = ""
-                salvar_livros(livros)
-                print("\nLivro devolvido com sucesso.")
-                return
-            print("\nLivro já está disponivel!")
-            return
-    print("\nLivro não encontrado.")
+    titulo = input("\nDigite qual livro deseja devolver: ").strip()
+
+    livro = encontrar_livro(livros, titulo)
+    if not livro:
+        print("\nLivro não encontrado.")
+        return
+
+    if livro["status"] != "emprestado":
+        print("\nLivro já está disponivel!")
+        return
+
+    livro["status"] = "disponivel"
+    livro["usuario"] = ""
+    salvar_livros(livros)
+    print("\nLivro devolvido com sucesso.")
 
 # Função com termo de busca para livro ou autor. No momento busca qualquer letra ou palavra e retorna se está no nome de algum livro ou autor e em quais
 def buscar_livro(livros):
-    termo_busca = input(
-        "\nQual livro ou autor deseja buscar? "
-    ).strip().lower()
-    print("\n=== LIVROS ENCONTRADOS ===")
-    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
-    print("-" * 75)
+    termo_busca = normalizar(input("\nQual livro ou autor deseja buscar? "))
+    imprimir_cabecalho("=== LIVROS ENCONTRADOS ===")
+    encontrados = False
 
     for indice, livro in enumerate(livros, start=1):
-        if (
-            termo_busca in livro["titulo"].lower()
-            or
-            termo_busca in livro["autor"].lower()
-        ):
-            titulo = limitar_texto(livro["titulo"], 30)
-            autor = limitar_texto(livro["autor"], 20)
-            print(
-                f"{indice:<4}"
-                f"{titulo:<30}"
-                f"{autor:<20}"
-                f"{livro['status']}"
-            )
+        if termo_busca in livro["titulo"].lower() or termo_busca in livro["autor"].lower():
+            imprimir_linha(indice, livro)
             encontrados = True
     if not encontrados:
         print("\nNenhum livro encontrado.")
 
-# Ainda não sei se te um jeito melhor de fazer isso, talvez uma lista?
 def mostrar_menu():
     print("\n===SISTEMA DE BIBLIOTECA===")
     print("1 - Cadastrar livro")
@@ -182,52 +162,33 @@ def confirmar(mensagem):
             return resposta
         print("Digite apenas S ou N.")
 
+# Repete uma ação (cadastrar, emprestar, devolver, buscar) enquanto o usuário confirmar com "S" e evita repetir o mesmo bloco "while True + confirmar" quatro vezes dentro do main()
+def repetir_acao(funcao, livros, mensagem_confirmacao):
+    while True:
+        funcao(livros)
+        if confirmar(mensagem_confirmacao) == "N":
+            break
+
 # Main, one todas as funções agem em conjunto
 def main():
     livros = carregar_livros()
+    acoes = {
+        "1": (cadastrar_livro, "\nDeseja cadastrar outro livro? (S/N): "),
+        "3": (emprestar_livro, "\nDeseja emprestar outro livro? (S/N): "),
+        "4": (devolver_livro, "\nDeseja devolver outro livro? (S/N): "),
+        "5": (buscar_livro, "\nDeseja buscar outro livro ou autor? (S/N): "),
+    }
     while True:
         mostrar_menu()
         opcao = input("Escolha uma opção: ")
-
-        if opcao == "1":
-            while True:
-                cadastrar_livro(livros)
-                if confirmar(
-                    "\nDeseja cadastrar outro livro? (S/N): "
-                ) == "N":
-                    break
-        
+        if opcao in acoes:
+            funcao, mensagem = acoes[opcao]
+            repetir_acao(funcao, livros, mensagem)
         elif opcao == "2":
             listar_livros(livros)
-
-        elif opcao == "3":
-            while True:
-                emprestar_livro(livros)
-                if confirmar(
-                    "\nDeseja emprestar outro livro? (S/N): "
-                ) == "N":
-                    break
-
-        elif opcao == "4":
-            while True:
-                devolver_livro(livros)
-                if confirmar(
-                    "\nDeseja devolver outro livro? (S/N): "
-                ) == "N":
-                    break
-
-        elif opcao == "5":
-            while True:
-                buscar_livro(livros)
-                if confirmar(
-                    "\nDeseja buscar outro livro ou autor? (S/N): "
-                ) == "N":
-                    break
-
         elif opcao == "6":
             print("Encerrando sistema...")
             break
-        
         else:
             print("Opção inválida.")
 

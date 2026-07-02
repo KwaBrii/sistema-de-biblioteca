@@ -76,5 +76,11 @@
     "autor": "Machado de Assis",
     "status": "disponivel",
     "usuario": ""
+  },
+  {
+    "titulo": "A Arte da Guerra",
+    "autor": "Sun Tzu",
+    "status": "disponivel",
+    "usuario": ""
   }
 ]
