@@ -1,5 +1,4 @@
 # Melhoria para o futuro: Adicionar ID de livros, adicionar quantidades do mesmo livro disponíveis
-
 from pathlib import Path
 import json
 
@@ -13,7 +12,7 @@ def carregar_livros():
         with open(ARQUIVO_LIVROS, "r", encoding="utf-8") as f:
             return json.load(f)
         
-# Caso arquivo JSON seja deletado, cria um novo
+    # Caso arquivo JSON seja deletado, cria um novo
     except FileNotFoundError:
         with open(ARQUIVO_LIVROS, "w", encoding="utf-8") as f:
             json.dump([], f)
@@ -63,7 +62,7 @@ def cadastrar_livro(livros):
         print("O título não pode ficar vazio.")
     autor = input("Autor do livro: ").strip()
 
-# Checa se o livro + autor é repetido, pois livros podem ter o mesmo nome
+    # Checa se o livro + autor é repetido, pois livros podem ter o mesmo nome
     for livro in livros:
         if (
             normalizar(livro["titulo"]) == normalizar(titulo)
@@ -79,19 +78,45 @@ def cadastrar_livro(livros):
         "usuario": ""
     }
 
-# .append vai adicionar o livro ao final da lista no JSON
+    # .append vai adicionar o livro ao final da lista no JSON
     livros.append(novo_livro)
     salvar_livros(livros)
     print("\nLivro cadastrado com sucesso!")
 
-# Função para listagem de livros, o cabeçalho já foi ajustado a partir da linha 45
-def listar_livros(livros):
+# Devolve uma CÓPIA ordenada da lista, sem alterar a ordem original (que é a ordem de cadastro)
+def ordenar_livros(livros, criterio):
+    if criterio == "titulo":
+        return sorted(livros, key=lambda livro: normalizar(livro["titulo"]))
+    if criterio == "autor":
+        return sorted(livros, key=lambda livro: normalizar(livro["autor"]))
+    return livros
+ 
+ 
+# Pergunta ao usuário qual critério de ordenação usar na listagem
+def escolher_ordem():
+    print("\nComo deseja ordenar a lista?")
+    print("1 - Ordem de cadastro (padrão)")
+    print("2 - Ordem alfabética (título)")
+    print("3 - Autor")
+    opcao = input("Escolha uma opção: ").strip()
+    return {"1": "cadastro", "2": "titulo", "3": "autor"}.get(opcao, "cadastro")
+ 
+ 
+def listar_livros(livros, criterio="cadastro"):
     if not livros:
         print("\nNenhum livro cadastrado.")
         return
+    
+    livros_ordenados = ordenar_livros(livros, criterio)
     imprimir_cabecalho("=== LIVROS CADASTRADOS ===")
-    for indice, livro in enumerate(livros, start=1):
+
+    for indice, livro in enumerate(livros_ordenados, start=1):
         imprimir_linha(indice, livro)
+ 
+# Usada pelo menu principal, pergunta o critério antes de listar. As outras funções continuam chamando listar_livros() direto, sem esse filtro, para não interromper o fluxo com uma pergunta extra.
+def listar_livros_com_filtro(livros):
+    criterio = escolher_ordem()
+    listar_livros(livros, criterio)
 
 # Função de emprestar o livro, impede empréstimo duplicado checando se o livro já foi emprestado, atualiza os dados no JSON, checa se o livro existe no JSON, lista os livros no inicio da função para quem for alugar se guiar
 def emprestar_livro(livros):
@@ -132,19 +157,25 @@ def devolver_livro(livros):
     salvar_livros(livros)
     print("\nLivro devolvido com sucesso.")
 
-# Função com termo de busca para livro ou autor. No momento busca qualquer letra ou palavra e retorna se está no nome de algum livro ou autor e em quais
+# Função com termo de busca para livro ou autor
 def buscar_livro(livros):
     termo_busca = normalizar(input("\nQual livro ou autor deseja buscar? "))
+    criterio = escolher_ordem()
+    livros_ordenados = ordenar_livros(livros, criterio)
+
     imprimir_cabecalho("=== LIVROS ENCONTRADOS ===")
     encontrados = False
+    indice = 0
 
-    for indice, livro in enumerate(livros, start=1):
+    for livro in livros_ordenados:
         if termo_busca in livro["titulo"].lower() or termo_busca in livro["autor"].lower():
+            indice += 1
             imprimir_linha(indice, livro)
             encontrados = True
     if not encontrados:
         print("\nNenhum livro encontrado.")
 
+# Função para mostrar o menu, antes era inteiro na main
 def mostrar_menu():
     print("\n===SISTEMA DE BIBLIOTECA===")
     print("1 - Cadastrar livro")
@@ -185,7 +216,7 @@ def main():
             funcao, mensagem = acoes[opcao]
             repetir_acao(funcao, livros, mensagem)
         elif opcao == "2":
-            listar_livros(livros)
+            listar_livros_com_filtro(livros)
         elif opcao == "6":
             print("Encerrando sistema...")
             break
