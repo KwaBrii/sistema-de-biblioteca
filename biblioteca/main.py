@@ -196,6 +196,33 @@ def remover_livro(livros):
     salvar_livros(livros)
     print("\nLivro removido com sucesso!")
 
+# Mostra as estatisticas dos livros que temos dados no JSON (total, disponiveis e emprestados) "len()" vai contar quantos elementos existem na lista chamada, e "sum" é literalmente a "soma"
+def mostrar_estatisticas(livros):
+    total = len(livros)
+    disponiveis = sum(1 for livro in livros
+        if livro["status"] == "disponivel"
+    )
+
+    emprestados = sum(1 for livro in livros
+        if livro["status"] == "emprestado"
+    )
+
+    autores = set()
+    for livro in livros:
+        autores.add(livro["autor"])
+
+    usuarios = set()
+    for livro in livros:
+        if livro["status"] == "emprestado":
+            usuarios.add(livro["usuario"])
+
+    print("\n=== ESTATÍSTICAS ===")
+    print(f"Total de livros: {total}")
+    print(f"Disponíveis: {disponiveis}")
+    print(f"Emprestados: {emprestados}")
+    print(f"Autores cadastrados: {len(autores)}")
+    print(f"Usuários com empréstimos: {len(usuarios)}")
+
 # Função para mostrar o menu, antes era inteiro na main
 def mostrar_menu():
     print("\n===SISTEMA DE BIBLIOTECA===")
@@ -205,7 +232,8 @@ def mostrar_menu():
     print("4 - Devolver livro")
     print("5 - Buscar livro")
     print("6 - Remover Livro")
-    print("7 - Sair")
+    print("7 - Estatísticas")
+    print("8 - Sair")
 
 # Uma função para loop na lista caso a pessoa decida realizar o mesmo tipo de ação várias vezes
 def confirmar(mensagem):
@@ -242,6 +270,8 @@ def main():
         elif opcao == "2":
             listar_livros_com_filtro(livros)
         elif opcao == "7":
+            mostrar_estatisticas(livros)
+        elif opcao == "8":
             print("Encerrando sistema...")
             break
         else:
