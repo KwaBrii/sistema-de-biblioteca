@@ -2,6 +2,10 @@
 from pathlib import Path
 import json
 
+# Variáveis de emprestimo para não ocorrer erros de digitação.
+STATUS_DISPONIVEL = "disponivel"
+STATUS_EMPRESTADO = "emprestado"
+
 # Para encontrar o JSON na pasta certa
 ARQUIVO_LIVROS = Path(__file__).parent / "livros.json"
 
@@ -74,7 +78,7 @@ def cadastrar_livro(livros):
     novo_livro = {
         "titulo": titulo,
         "autor": autor,
-        "status": "disponivel",
+        "status": STATUS_DISPONIVEL,
         "usuario": ""
     }
 
@@ -128,12 +132,12 @@ def emprestar_livro(livros):
         print("\nLivro não encontrado.")
         return
 
-    if livro["status"] == "emprestado":
+    if livro["status"] == STATUS_EMPRESTADO:
         print(f"\nO livro já está emprestado para {livro['usuario']}.")
         return
 
     usuario = input("Nome de quem está retirando: ").strip()
-    livro["status"] = "emprestado"
+    livro["status"] = STATUS_EMPRESTADO
     livro["usuario"] = usuario
 
     salvar_livros(livros)
@@ -148,11 +152,11 @@ def devolver_livro(livros):
         print("\nLivro não encontrado.")
         return
 
-    if livro["status"] != "emprestado":
+    if livro["status"] != STATUS_EMPRESTADO:
         print("\nLivro já está disponivel!")
         return
 
-    livro["status"] = "disponivel"
+    livro["status"] = STATUS_DISPONIVEL
     livro["usuario"] = ""
     salvar_livros(livros)
     print("\nLivro devolvido com sucesso.")
@@ -184,7 +188,7 @@ def remover_livro(livros):
         print("\nLivro não encontrado.")
         return
         
-    if livro["status"] == "emprestado":
+    if livro["status"] == STATUS_EMPRESTADO:
         print("\nNão é possível remover um livro emprestado.")
         return
     resposta = confirmar(f'\nTem certeza que deseja remover "{livro["titulo"]}"? (S/N): ')
@@ -200,11 +204,11 @@ def remover_livro(livros):
 def mostrar_estatisticas(livros):
     total = len(livros)
     disponiveis = sum(1 for livro in livros
-        if livro["status"] == "disponivel"
+        if livro["status"] == STATUS_DISPONIVEL
     )
 
     emprestados = sum(1 for livro in livros
-        if livro["status"] == "emprestado"
+        if livro["status"] == STATUS_EMPRESTADO
     )
 
     autores = set()
@@ -213,7 +217,7 @@ def mostrar_estatisticas(livros):
 
     usuarios = set()
     for livro in livros:
-        if livro["status"] == "emprestado":
+        if livro["status"] == STATUS_EMPRESTADO:
             usuarios.add(livro["usuario"])
 
     print("\n=== ESTATÍSTICAS ===")
