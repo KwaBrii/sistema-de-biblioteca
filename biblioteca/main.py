@@ -175,6 +175,27 @@ def buscar_livro(livros):
     if not encontrados:
         print("\nNenhum livro encontrado.")
 
+# Função para deletar um livro da lista
+def remover_livro(livros):
+    listar_livros(livros)
+    titulo = input("\nDigite o título do livro que deseja remover: ").strip()
+    livro = encontrar_livro(livros, titulo)
+    if not livro:
+        print("\nLivro não encontrado.")
+        return
+        
+    if livro["status"] == "emprestado":
+        print("\nNão é possível remover um livro emprestado.")
+        return
+    resposta = confirmar(f'\nTem certeza que deseja remover "{livro["titulo"]}"? (S/N): ')
+
+    if resposta == "N":
+        print("\nRemoção cancelada.")
+        return
+    livros.remove(livro)
+    salvar_livros(livros)
+    print("\nLivro removido com sucesso!")
+
 # Função para mostrar o menu, antes era inteiro na main
 def mostrar_menu():
     print("\n===SISTEMA DE BIBLIOTECA===")
@@ -183,7 +204,8 @@ def mostrar_menu():
     print("3 - Emprestar livro")
     print("4 - Devolver livro")
     print("5 - Buscar livro")
-    print("6 - Sair")
+    print("6 - Remover Livro")
+    print("7 - Sair")
 
 # Uma função para loop na lista caso a pessoa decida realizar o mesmo tipo de ação várias vezes
 def confirmar(mensagem):
@@ -201,14 +223,16 @@ def repetir_acao(funcao, livros, mensagem_confirmacao):
             break
 
 # Main, one todas as funções agem em conjunto
-def main():
+def main(): 
     livros = carregar_livros()
     acoes = {
         "1": (cadastrar_livro, "\nDeseja cadastrar outro livro? (S/N): "),
         "3": (emprestar_livro, "\nDeseja emprestar outro livro? (S/N): "),
         "4": (devolver_livro, "\nDeseja devolver outro livro? (S/N): "),
         "5": (buscar_livro, "\nDeseja buscar outro livro ou autor? (S/N): "),
+        "6": (remover_livro, "\nDeseja remover outro livro? (S/N): "),
     }
+
     while True:
         mostrar_menu()
         opcao = input("Escolha uma opção: ")
@@ -217,7 +241,7 @@ def main():
             repetir_acao(funcao, livros, mensagem)
         elif opcao == "2":
             listar_livros_com_filtro(livros)
-        elif opcao == "6":
+        elif opcao == "7":
             print("Encerrando sistema...")
             break
         else:
