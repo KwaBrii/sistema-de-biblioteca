@@ -1,5 +1,6 @@
 # Melhoria para o futuro: Adicionar ID de livros, adicionar quantidades do mesmo livro disponíveis
 from pathlib import Path
+from utils import (normalizar, limitar_texto, confirmar)
 import json
 
 # Variáveis de emprestimo para não ocorrer erros de digitação.
@@ -26,16 +27,6 @@ def carregar_livros():
 def salvar_livros(livros):
     with open(ARQUIVO_LIVROS, "w", encoding="utf-8") as f:
         json.dump(livros, f, indent=4, ensure_ascii=False)
-
-# Centraliza a normalização de texto (usada em cadastro, busca, empréstimo e devolução)
-def normalizar(texto):
-    return texto.strip().lower()
-
-# Limita o texto para não quebrar a tabela de exibição
-def limitar_texto(texto, tamanho):
-    if len(texto) > tamanho:
-        return texto[:tamanho - 4] + "..."
-    return texto
 
 # Centraliza a busca de um livro pelo título
 def encontrar_livro(livros, titulo):
@@ -238,14 +229,6 @@ def mostrar_menu():
     print("6 - Remover Livro")
     print("7 - Estatísticas")
     print("8 - Sair")
-
-# Uma função para loop na lista caso a pessoa decida realizar o mesmo tipo de ação várias vezes
-def confirmar(mensagem):
-    while True:
-        resposta = input(mensagem).strip().upper()
-        if resposta in ("S", "N"):
-            return resposta
-        print("Digite apenas S ou N.")
 
 # Repete uma ação (cadastrar, emprestar, devolver, buscar) enquanto o usuário confirmar com "S" e evita repetir o mesmo bloco "while True + confirmar" quatro vezes dentro do main()
 def repetir_acao(funcao, livros, mensagem_confirmacao):
