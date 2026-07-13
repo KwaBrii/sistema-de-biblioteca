@@ -2,6 +2,7 @@
 from pathlib import Path
 from utils import (normalizar, limitar_texto, confirmar)
 from arquivo import (carregar_livros, salvar_livros)
+from menu import (mostrar_menu, escolher_ordem, imprimir_cabecalho, imprimir_linha)
 import json
 
 # Variáveis de emprestimo para não ocorrer erros de digitação.
@@ -18,18 +19,6 @@ def encontrar_livro(livros, titulo):
         if normalizar(livro["titulo"]) == titulo_normalizado:
             return livro
     return None
-
-# Cabeçalho da tabela, usado tanto em listar quanto em buscar
-def imprimir_cabecalho(titulo_tabela):
-    print(f"\n{titulo_tabela}")
-    print(f"{'Nº':<4}{'Título':<30}{'Autor':<20}{'Status'}")
-    print("-" * 75)
-
-# Imprime uma linha da tabela (um livro), usado em listar e buscar
-def imprimir_linha(indice, livro):
-    titulo = limitar_texto(livro["titulo"], 30)
-    autor = limitar_texto(livro["autor"], 20)
-    print(f"{indice:<4}{titulo:<30}{autor:<20}{livro['status']}")
 
 # Função do cadastro de livros
 def cadastrar_livro(livros):
@@ -68,17 +57,6 @@ def ordenar_livros(livros, criterio):
     if criterio == "autor":
         return sorted(livros, key=lambda livro: normalizar(livro["autor"]))
     return livros
- 
- 
-# Pergunta ao usuário qual critério de ordenação usar na listagem
-def escolher_ordem():
-    print("\nComo deseja ordenar a lista?")
-    print("1 - Ordem de cadastro (padrão)")
-    print("2 - Ordem alfabética (título)")
-    print("3 - Autor")
-    opcao = input("Escolha uma opção: ").strip()
-    return {"1": "cadastro", "2": "titulo", "3": "autor"}.get(opcao, "cadastro")
- 
  
 def listar_livros(livros, criterio="cadastro"):
     if not livros:
@@ -200,18 +178,6 @@ def mostrar_estatisticas(livros):
     print(f"Emprestados: {emprestados}")
     print(f"Autores cadastrados: {len(autores)}")
     print(f"Usuários com empréstimos: {len(usuarios)}")
-
-# Função para mostrar o menu, antes era inteiro na main
-def mostrar_menu():
-    print("\n===SISTEMA DE BIBLIOTECA===")
-    print("1 - Cadastrar livro")
-    print("2 - Listar livros")
-    print("3 - Emprestar livro")
-    print("4 - Devolver livro")
-    print("5 - Buscar livro")
-    print("6 - Remover Livro")
-    print("7 - Estatísticas")
-    print("8 - Sair")
 
 # Repete uma ação (cadastrar, emprestar, devolver, buscar) enquanto o usuário confirmar com "S" e evita repetir o mesmo bloco "while True + confirmar" quatro vezes dentro do main()
 def repetir_acao(funcao, livros, mensagem_confirmacao):
